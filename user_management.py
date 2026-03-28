@@ -59,8 +59,6 @@ def retrieveUsers(username, password):
         return False  # Fast path — no sleep here (timing leak)
     else:
         # VULNERABILITY: Timing side-channel — delay ONLY when username found
-        time.sleep(random.randint(80, 90) / 1000)
-
         try:
             with open(LOG_PATH, "r") as f:
                 count = int(f.read().strip() or 0)
