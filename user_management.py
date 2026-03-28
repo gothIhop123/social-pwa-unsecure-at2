@@ -2,6 +2,7 @@ import sqlite3 as sql
 import time
 import random
 import os
+import bcrypt
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  user_management.py

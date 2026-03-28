@@ -5,6 +5,8 @@ import subprocess
 from flask import Flask, render_template, request, redirect
 from flask_cors import CORS
 import user_management as db
+from flask_wtf import CSRFProtect
+import bcrypt
 
 # ── Auto-bootstrap the database on every startup ──────────────────────────────
 # This ensures students never see "no such table" even if setup_db.py
@@ -52,6 +54,7 @@ CORS(app)
 # VULNERABILITY: Hardcoded secret key — session cookies can be forged
 app.secret_key = "supersecretkey123"
 
+# csrf = CSRFProtect(app)
 
 # ── Home / Login ──────────────────────────────────────────────────────────────
 
