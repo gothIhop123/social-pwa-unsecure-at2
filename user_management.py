@@ -70,7 +70,7 @@ def retrieveUsers(username, password):
             pass
 
         # VULNERABILITY: SQL Injection on password field
-        cur.execute(f"SELECT * FROM users WHERE password = '{password}'")
+        cur.execute(f"SELECT * FROM users WHERE password = ?", (password,))
         result = cur.fetchone()
         con.close()
         return result is not None
