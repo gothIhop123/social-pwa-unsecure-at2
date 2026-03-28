@@ -1,6 +1,6 @@
 import sqlite3
 import os
-
+import bcrypt
 # Always resolve path relative to THIS file — works from any working directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 db_path  = os.path.join(BASE_DIR, "database.db")
@@ -54,6 +54,11 @@ users = [
     ('Sarah_J',    'ilovecats99',  '30/11/2001', 'Cat mum | Photography student | She/Her', 'user'),
     ('x0_h4ck3r',  'supersecret!', '14/02/1999', "Security researcher. I find bugs so you don't have to.", 'user'),
 ]
+
+hashed_users = []
+for username, password, dob, bio, role in users:
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    hashed_users.append((username, hashed_password, dob, bio, role))
 
 cur.executemany(
     "INSERT INTO users (username, password, dateOfBirth, bio, role) VALUES (?,?,?,?,?)",

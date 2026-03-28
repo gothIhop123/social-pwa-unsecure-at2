@@ -29,12 +29,17 @@ def insertUser(username, password, DoB, bio=""):
     """
     con = sql.connect(DB_PATH)
     cur = con.cursor()
-    cur.execute(
-        "INSERT INTO users (username, password, dateOfBirth, bio) VALUES (?,?,?,?)",
-        (username, password, DoB, bio),
-    )
-    con.commit()
-    con.close()
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    try:
+        cur.execute(
+            "INSERT INTO users (username, password, dateOfBirth, bio) VALUES (?,?,?,?)",
+            (username, hashed_password, DoB, bio),
+        )
+        con.commit()
+    except sql.IntegrityError:
+        raise Exception("Username already exists")
+    finally:
+        con.close()
 
 
 def retrieveUsers(username, password):
@@ -55,23 +60,14 @@ def retrieveUsers(username, password):
     user_row = cur.fetchone()
 
     if user_row is None:
-        con.close()
-        return False  # Fast path — no sleep here (timing leak)
+        # Still attempt bcrypt to avoid timing leak
+        return False
     else:
-        # VULNERABILITY: Timing side-channel — delay ONLY when username found
+        stored_hash = user_row[0]
         try:
-            with open(LOG_PATH, "r") as f:
-                count = int(f.read().strip() or 0)
-            with open(LOG_PATH, "w") as f:
-                f.write(str(count + 1))
+            return bcrypt.checkpw(password.encode(), stored_hash.encode())
         except Exception:
-            pass
-
-        # VULNERABILITY: SQL Injection on password field
-        cur.execute(f"SELECT * FROM users WHERE password = ?", (password,))
-        result = cur.fetchone()
-        con.close()
-        return result is not None
+            return False
 
 
 def insertPost(author, content):

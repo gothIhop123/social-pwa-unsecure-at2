@@ -7,6 +7,7 @@ from flask_cors import CORS
 import user_management as db
 from flask_wtf import CSRFProtect
 import bcrypt
+from user_management import insertUser
 
 # ── Auto-bootstrap the database on every startup ──────────────────────────────
 # This ensures students never see "no such table" even if setup_db.py
@@ -54,7 +55,7 @@ CORS(app)
 # VULNERABILITY: Hardcoded secret key — session cookies can be forged
 app.secret_key = "supersecretkey123"
 
-# csrf = CSRFProtect(app)
+csrf = CSRFProtect(app)
 
 # ── Home / Login ──────────────────────────────────────────────────────────────
 
@@ -164,4 +165,4 @@ def success():
 if __name__ == "__main__":
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    app.run(debug=False, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
