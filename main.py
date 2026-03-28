@@ -53,7 +53,7 @@ app = Flask(__name__)
 CORS(app)
 
 # VULNERABILITY: Hardcoded secret key — session cookies can be forged
-app.secret_key = "supersecretkey123"
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
 
 csrf = CSRFProtect(app)
 
