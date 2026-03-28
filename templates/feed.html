@@ -29,7 +29,7 @@
   <div class="feed-main">
 
     {% if msg %}
-    <div class="msg-box mb-2" id="js-msg-box">{{ msg | safe }}</div> 
+    <div class="msg-box mb-2" id="js-msg-box">{{ msg }}</div> 
     {% else %}
     <div id="js-msg-box" style="display:none;"></div>
     {% endif %}
@@ -43,7 +43,6 @@
     -->
     <div class="compose-card">
       <form action="/feed.html" method="POST">
-        <input type="hidden" name="username" value="{{ username }}" />
         <div class="form-group" style="margin-bottom:0.6rem;">
           <textarea
             name="content"
