@@ -60,14 +60,18 @@ def retrieveUsers(username, password):
     user_row = cur.fetchone()
 
     if user_row is None:
-        # Still attempt bcrypt to avoid timing leak
-        return False
+        #Dummy hash to avoid delay
+        stored_hash = "$2b$12$R9h7cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jKMUe"
     else:
         stored_hash = user_row[0]
-        try:
-            return bcrypt.checkpw(password.encode(), stored_hash.encode())
-        except Exception:
-            return False
+    
+    try:
+        password_matches = bcrypt.checkpw(password.encode(), stored_hash.encode())
+    except Exception:
+        password_matches = False
+    
+    # Return True only if user exists AND password matches
+    return user_row is not None and password_matches
 
 
 def insertPost(author, content):
